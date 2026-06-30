@@ -1,0 +1,6 @@
+# Netlify Redirects
+# All requests to root go to index.html
+/*    /index.html    200
+
+# Admin route
+/admin    /admin.html    200

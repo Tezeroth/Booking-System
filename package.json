@@ -1,0 +1,19 @@
+{
+  "name": "booking-system",
+  "version": "1.0.0",
+  "description": "A secure, reusable booking system template with Firebase and Netlify deployment.",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Open public/index.html in your browser or use a local server.'",
+    "serve": "npx serve public",
+    "test": "echo 'No tests configured yet.'"
+  },
+  "keywords": [
+    "booking-system",
+    "firebase",
+    "netlify",
+    "gdpr",
+    "tailwind"
+  ],
+  "license": "MIT"
+}

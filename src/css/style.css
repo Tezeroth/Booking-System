@@ -1,0 +1,80 @@
+/**
+ * Custom Styles — Booking-System
+ * ==============================
+ * Extends Tailwind CSS with minimal custom styles.
+ * Brand colours and gradient are defined here for easy reuse.
+ */
+
+/* CSS Custom Properties for branding — edit these per client */
+:root {
+    --brand-primary: #667eea;
+    --brand-secondary: #764ba2;
+    --brand-gradient: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+    --brand-text: #ffffff;
+    --font-family: 'Inter', sans-serif;
+}
+
+/* Base */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+}
+
+/* Focus styles for keyboard navigation */
+:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Error message styling */
+.error-message {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+/* Skip to content — visually hidden until focused */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 100;
+    padding: 8px 16px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive table wrapper for admin */
+@media (max-width: 768px) {
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Print styles */
+@media print {
+    .gradient-bg {
+        background: #667eea !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

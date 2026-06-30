@@ -1,0 +1,51 @@
+# Netlify Deployment Configuration
+# ================================
+# Copy this file to the root directory for deployment,
+# or configure these settings in the Netlify UI.
+
+[build]
+  # The directory to publish
+  publish = "public"
+  
+  # No build command needed for static site
+  # But if you add a build step, specify it here
+  command = ""
+
+[build.environment]
+  # Firebase config — set these in Netlify environment variables
+  FIREBASE_API_KEY = "your-api-key"
+  FIREBASE_AUTH_DOMAIN = "your-project.firebaseapp.com"
+  FIREBASE_PROJECT_ID = "your-project-id"
+  FIREBASE_STORAGE_BUCKET = "your-project.appspot.com"
+  FIREBASE_MESSAGING_SENDER_ID = "your-sender-id"
+  FIREBASE_APP_ID = "your-app-id"
+
+# Redirects (also handled by public/_redirects)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Content Security Policy
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' https://apis.google.com https://www.gstatic.com https://cdn.tailwindcss.com 'unsafe-inline';
+      style-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com 'unsafe-inline';
+      font-src https://fonts.gstatic.com;
+      connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://*.firebaseio.com;
+      frame-src 'none';
+      img-src 'self' data:;
+    """
