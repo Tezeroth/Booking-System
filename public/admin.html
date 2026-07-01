@@ -6,7 +6,7 @@
     <meta name="description" content="Admin Dashboard - Booking-System">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.gstatic.com https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://*.firebaseio.com;">
     <title>Admin - Booking-System</title>
-    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -71,11 +71,11 @@
             <form id="login-form" class="space-y-4" novalidate>
                 <div>
                     <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" id="login-email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none" placeholder="admin@example.com">
+                    <input type="email" id="login-email" name="email" required autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none" placeholder="admin@example.com">
                 </div>
                 <div>
                     <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="login-password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none" placeholder="Enter your password">
+                    <input type="password" id="login-password" name="password" required autocomplete="current-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none" placeholder="Enter your password">
                 </div>
 
                 <p id="login-error" class="hidden text-red-600 text-sm" role="alert"></p>
@@ -230,7 +230,7 @@
 
     <!-- Scripts -->
     <script type="module">
-        import { initAdmin } from '../src/js/admin.js';
+        import { initAdmin } from './js/admin.js';
         document.addEventListener('DOMContentLoaded', initAdmin);
     </script>
 </body>
