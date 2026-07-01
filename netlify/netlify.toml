@@ -7,9 +7,8 @@
   # The directory to publish
   publish = "public"
   
-  # No build command needed for static site
-  # But if you add a build step, specify it here
-  command = ""
+  # Copy JS and CSS into public/ for deployment
+  command = "npm run build"
 
 [build.environment]
   # Firebase config — set these in Netlify environment variables

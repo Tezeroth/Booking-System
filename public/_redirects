@@ -1,6 +1,14 @@
 # Netlify Redirects
-# All requests to root go to index.html
-/*    /index.html    200
+# Serve existing files directly (JS, CSS, images, etc.)
+/*.js    /:splat    200
+/*.css    /:splat    200
+/*.json    /:splat    200
+/*.png    /:splat    200
+/*.svg    /:splat    200
+/*.ico    /:splat    200
 
 # Admin route
 /admin    /admin.html    200
+
+# SPA fallback - all other requests go to index.html
+/*    /index.html    200
