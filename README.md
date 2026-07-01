@@ -116,40 +116,25 @@ npx serve public
 ### Step 3: Create a Firestore Database
 
 1. Go to **Firestore Database** → **Create database**
-2. Choose **"Start in test mode"** (we'll update rules later)
-3. Choose a location (e.g., `eur3` for Europe)
-4. Click **"Enable"**
+2. Choose a location (e.g., `eur3` for Europe)
+3. Choose **"Start in test mode"** (we'll update rules later)
+4. Click **"Create"**
 
 ### Step 4: Get Your Firebase Config
 
 1. Go to **Project Settings** (⚙️ icon) → **General**
-2. Under **"Your apps"**, click **"Add app"** → **"Web"**
+2. Under **"Your apps"**, click **"Circular Button </>"** → **"Web"**
 3. Register the app (nickname: `booking-system`)
 4. Copy the `firebaseConfig` object — you'll need these values
 
 ### Step 5: Update Firestore Rules
 
-1. Go to **Firestore Database** → **Rules**
+1. Go to **Firestore** → database → **Rules**
 2. Delete the existing rules
 3. Copy the contents of `firebase/firestore.rules`
 4. **REPLACE** `YOUR_ADMIN_UID_HERE` with your actual admin UID (from Step 2)
 5. Click **"Publish"**
 
-### Step 6: Create Required Indexes
-
-1. Go to **Firestore Database** → **Indexes**
-2. Click **"Add index"**
-3. Create these indexes:
-
-   **Index 1:**
-   - Collection: `bookings`
-   - Fields: `status` (Ascending), `createdAt` (Descending)
-
-   **Index 2:**
-   - Collection: `bookings`
-   - Fields: `retentionExpiry` (Ascending), `createdAt` (Descending)
-
-Or just click **"Import"** and upload `firebase/firestore.indexes.json`.
 
 ---
 

@@ -14,12 +14,12 @@
  * @type {Object}
  */
 export const firebaseConfig = {
-    apiKey: import.meta.env?.VITE_FIREBASE_API_KEY || 'YOUR_API_KEY',
-    authDomain: import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN || 'YOUR_PROJECT.firebaseapp.com',
-    projectId: import.meta.env?.VITE_FIREBASE_PROJECT_ID || 'YOUR_PROJECT_ID',
-    storageBucket: import.meta.env?.VITE_FIREBASE_STORAGE_BUCKET || 'YOUR_PROJECT.appspot.com',
-    messagingSenderId: import.meta.env?.VITE_FIREBASE_MESSAGING_SENDER_ID || 'YOUR_SENDER_ID',
-    appId: import.meta.env?.VITE_FIREBASE_APP_ID || 'YOUR_APP_ID',
+    apiKey: import.meta.env?.VITE_FIREBASE_API_KEY || 'AIzaSyD-1pPTV5GNnE_HSIHr10MqaMtBTb5qkCQ',
+    authDomain: import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN || 'booking-system-e6af8.firebaseapp.com',
+    projectId: import.meta.env?.VITE_FIREBASE_PROJECT_ID || 'booking-system-e6af8',
+    storageBucket: import.meta.env?.VITE_FIREBASE_STORAGE_BUCKET || 'booking-system-e6af8.firebasestorage.app',
+    messagingSenderId: import.meta.env?.VITE_FIREBASE_MESSAGING_SENDER_ID || '930363967073',
+    appId: import.meta.env?.VITE_FIREBASE_APP_ID || '1:930363967073:web:255f49e1cce13bf287cc20',
 };
 
 /**
@@ -27,7 +27,7 @@ export const firebaseConfig = {
  * Only this user can access the admin dashboard.
  * @type {string}
  */
-export const ADMIN_UID = 'YOUR_ADMIN_UID';
+export const ADMIN_UID = 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
 
 /**
  * Business branding configuration.
