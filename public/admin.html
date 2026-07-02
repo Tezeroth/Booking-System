@@ -53,10 +53,10 @@
     <div id="alert-container" class="max-w-7xl mx-auto px-4 mt-4" aria-live="polite"></div>
 
     <!-- Loading overlay -->
-    <div id="admin-loading" class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50" role="status">
+    <div id="admin-loading" class="hidden fixed inset-0 theme-overlay flex items-center justify-center z-50" role="status">
         <div class="theme-panel rounded-xl p-6 flex items-center gap-4 shadow-xl">
             <div class="animate-spin rounded-full h-8 w-8 border-4 border-purple-600 border-t-transparent"></div>
-            <p class="text-gray-700 font-medium">Loading...</p>
+            <p class="theme-text font-medium">Loading...</p>
         </div>
     </div>
 
@@ -138,15 +138,15 @@
                 <div class="overflow-x-auto">
                     <table class="w-full" role="table" aria-label="Bookings list">
                         <thead>
-                            <tr class="bg-gray-50 border-b border-gray-200">
-                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider theme-muted">Name</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <tr class="theme-table-header">
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Time</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="bookings-table-body">
@@ -162,7 +162,7 @@
     </div>
 
     <!-- Booking Details Modal -->
-    <div id="modal-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    <div id="modal-overlay" class="hidden fixed inset-0 theme-overlay z-40"></div>
     <div id="booking-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="theme-panel max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl shadow-2xl">
             <div class="gradient-bg flex items-center justify-between rounded-t-xl px-6 py-4">
@@ -172,49 +172,49 @@
             <div class="p-6 space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Name</p>
-                        <p id="modal-name" class="text-gray-800 font-medium"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Name</p>
+                        <p id="modal-name" class="theme-text font-medium"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Email</p>
-                        <p id="modal-email" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Email</p>
+                        <p id="modal-email" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Phone</p>
-                        <p id="modal-phone" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Phone</p>
+                        <p id="modal-phone" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Date</p>
-                        <p id="modal-date" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Date</p>
+                        <p id="modal-date" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Time</p>
-                        <p id="modal-time" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Time</p>
+                        <p id="modal-time" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Status</p>
-                        <p id="modal-status" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Status</p>
+                        <p id="modal-status" class="theme-text"></p>
                     </div>
                     <div class="col-span-2">
-                        <p class="text-xs text-gray-500 uppercase font-medium">Notes</p>
-                        <p id="modal-notes" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Notes</p>
+                        <p id="modal-notes" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Created</p>
-                        <p id="modal-created" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Created</p>
+                        <p id="modal-created" class="theme-text"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase font-medium">Consent Given</p>
-                        <p id="modal-consent" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Consent Given</p>
+                        <p id="modal-consent" class="theme-text"></p>
                     </div>
                     <div class="col-span-2">
-                        <p class="text-xs text-gray-500 uppercase font-medium">Retention Expiry</p>
-                        <p id="modal-retention" class="text-gray-800"></p>
+                        <p class="text-xs theme-muted uppercase font-medium">Retention Expiry</p>
+                        <p id="modal-retention" class="theme-text"></p>
                     </div>
                 </div>
             </div>
             <div class="theme-surface flex justify-end rounded-b-xl px-6 py-4">
-                <button data-close-modal class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 font-medium">
+                <button data-close-modal class="theme-btn-secondary px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">
                     Close
                 </button>
             </div>
@@ -231,7 +231,11 @@
     <!-- Scripts -->
     <script type="module">
         import { initAdmin } from './js/admin.js';
-        document.addEventListener('DOMContentLoaded', initAdmin);
+        import { initThemeToggle } from './js/theme.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            initThemeToggle();
+            initAdmin();
+        });
     </script>
 </body>
 </html>

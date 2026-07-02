@@ -238,7 +238,7 @@ function renderBookings(bookings) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
         cell.setAttribute('colspan', '7');
-        cell.className = 'text-center py-8 text-gray-500';
+        cell.className = 'text-center py-8 theme-muted';
         cell.textContent = term ? 'No bookings match your search.' : 'No bookings found.';
         row.appendChild(cell);
         tbody.appendChild(row);
@@ -247,16 +247,16 @@ function renderBookings(bookings) {
 
     filtered.forEach((booking) => {
         const row = document.createElement('tr');
-        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        row.className = 'theme-row-hover';
 
         // Status badge colour
         const statusColors = {
-            pending: 'bg-yellow-100 text-yellow-800',
-            confirmed: 'bg-blue-100 text-blue-800',
-            completed: 'bg-green-100 text-green-800',
-            archived: 'bg-gray-100 text-gray-600',
+            pending: 'theme-badge-pending',
+            confirmed: 'theme-badge-confirmed',
+            completed: 'theme-badge-completed',
+            archived: 'theme-badge-archived',
         };
-        const statusColor = statusColors[booking.status] || 'bg-gray-100 text-gray-600';
+        const statusColor = statusColors[booking.status] || 'theme-badge-archived';
 
         const cells = [
             sanitiseText(booking.name || ''),
@@ -264,7 +264,7 @@ function renderBookings(bookings) {
             sanitiseText(booking.phone || ''),
             booking.date || '',
             formatTime(booking.time),
-            `<span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor}">${sanitiseText(booking.status || '')}</span>`,
+            `<span class="theme-badge ${statusColor}">${sanitiseText(booking.status || '')}</span>`,
             formatDate(booking.createdAt),
         ];
 
@@ -289,25 +289,25 @@ function renderBookings(bookings) {
         actionsContainer.className = 'flex gap-2';
 
         // View button
-        const viewBtn = createButton('View', 'bg-blue-500 hover:bg-blue-600', () => showBookingDetails(booking));
+        const viewBtn = createButton('View', 'theme-btn-primary', () => showBookingDetails(booking));
         actionsContainer.appendChild(viewBtn);
 
         // Status buttons
         if (booking.status === 'pending') {
-            const confirmBtn = createButton('Confirm', 'bg-green-500 hover:bg-green-600', () => updateStatus(booking.id, 'confirmed'));
+            const confirmBtn = createButton('Confirm', 'theme-btn-success', () => updateStatus(booking.id, 'confirmed'));
             actionsContainer.appendChild(confirmBtn);
         }
         if (booking.status === 'confirmed') {
-            const completeBtn = createButton('Complete', 'bg-teal-500 hover:bg-teal-600', () => updateStatus(booking.id, 'completed'));
+            const completeBtn = createButton('Complete', 'theme-btn-teal', () => updateStatus(booking.id, 'completed'));
             actionsContainer.appendChild(completeBtn);
         }
         if (booking.status !== 'archived') {
-            const archiveBtn = createButton('Archive', 'bg-gray-500 hover:bg-gray-600', () => updateStatus(booking.id, 'archived'));
+            const archiveBtn = createButton('Archive', 'theme-btn-gray', () => updateStatus(booking.id, 'archived'));
             actionsContainer.appendChild(archiveBtn);
         }
 
         // Delete button
-        const deleteBtn = createButton('Delete', 'bg-red-500 hover:bg-red-600', () => confirmDelete(booking.id, booking.name));
+        const deleteBtn = createButton('Delete', 'theme-btn-danger', () => confirmDelete(booking.id, booking.name));
         actionsContainer.appendChild(deleteBtn);
 
         actionsCell.appendChild(actionsContainer);
@@ -326,7 +326,7 @@ function renderBookings(bookings) {
  */
 function createButton(text, colorClasses, onClick) {
     const btn = document.createElement('button');
-    btn.className = `px-2 py-1 rounded text-xs text-white font-medium ${colorClasses} focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`;
+    btn.className = `theme-btn-action ${colorClasses}`;
     btn.textContent = text;
     btn.setAttribute('type', 'button');
     btn.addEventListener('click', onClick);
