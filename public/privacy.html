@@ -4,44 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Privacy Policy - Booking-System">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.gstatic.com https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://www.gstatic.com https://*.firebaseio.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.firebaseio.com;">
     <title>Privacy Policy - Booking-System</title>
+    <script>
+        (function () {
+            const storageKey = 'theme';
+            const root = document.documentElement;
+            try {
+                const savedTheme = localStorage.getItem(storageKey);
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+                root.classList.toggle('dark', isDark);
+                root.style.colorScheme = isDark ? 'dark' : 'light';
+            } catch (error) {
+                root.classList.remove('dark');
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="theme-app min-h-screen">
     <!-- Navigation -->
-    <nav class="gradient-bg text-white shadow-lg" role="navigation" aria-label="Main navigation">
-        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="text-xl font-bold tracking-tight">Booking-System</a>
-            <div class="flex gap-4">
-                <a href="/" class="hover:underline">Book</a>
-                <a href="admin.html" class="hover:underline">Admin</a>
-                <a href="privacy.html" class="hover:underline font-medium" aria-current="page">Privacy</a>
+    <nav class="gradient-bg shadow-lg" role="navigation" aria-label="Main navigation">
+        <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
+            <a href="/" class="text-xl font-bold tracking-tight text-white">Booking-System</a>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button id="themeToggle" type="button" class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/70" aria-pressed="false">
+                    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+                    <span class="theme-toggle-label">Dark mode</span>
+                </button>
+                <a href="/" class="text-white hover:underline">Book</a>
+                <a href="admin.html" class="text-white hover:underline">Admin</a>
+                <a href="privacy.html" class="font-medium text-white hover:underline" aria-current="page">Privacy</a>
             </div>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Privacy Policy</h1>
+        <h1 class="theme-text mb-8 text-3xl font-bold">Privacy Policy</h1>
 
-        <div class="bg-white rounded-xl shadow-md p-8 space-y-6 text-gray-700 leading-relaxed">
+        <div class="theme-panel rounded-xl p-8 leading-relaxed shadow-md">
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">1. Introduction</h2>
+                <h2 class="theme-text mb-3 text-xl font-semibold">1. Introduction</h2>
                 <p>Booking-System ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal data when you use our booking service.</p>
                 <p class="mt-2">We comply with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">2. Data We Collect</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">2. Data We Collect</h2>
                 <p>When you make a booking, we collect the following personal information:</p>
                 <ul class="list-disc pl-6 mt-2 space-y-1">
                     <li>Full name</li>
@@ -54,12 +66,12 @@
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">3. Legal Basis for Processing</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">3. Legal Basis for Processing</h2>
                 <p>We process your personal data based on your explicit consent, which you provide by checking the consent checkbox on the booking form. You have the right to withdraw this consent at any time.</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">4. How We Use Your Data</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">4. How We Use Your Data</h2>
                 <p>Your data is used solely for the purpose of:</p>
                 <ul class="list-disc pl-6 mt-2 space-y-1">
                     <li>Arranging and managing your booking</li>
@@ -69,17 +81,17 @@
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">5. Data Retention</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">5. Data Retention</h2>
                 <p>We retain your personal data for a maximum of 12 months from the date of your booking. After this period, your data will be permanently deleted. You may request earlier deletion at any time by contacting us.</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">6. Data Sharing</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">6. Data Sharing</h2>
                 <p>We do not share your personal data with third parties. Your data is stored securely using Firebase Firestore, which is GDPR-compliant and certified under the EU-US Data Privacy Framework.</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">7. Your Rights</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">7. Your Rights</h2>
                 <p>Under UK GDPR, you have the following rights:</p>
                 <ul class="list-disc pl-6 mt-2 space-y-1">
                     <li><strong>Right to access</strong> — Request a copy of your personal data.</li>
@@ -93,27 +105,32 @@
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">8. Security</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">8. Security</h2>
                 <p>We implement appropriate technical and organisational measures to protect your personal data, including encryption in transit (HTTPS) and at rest, strict access controls, and regular security reviews.</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">9. Contact</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">9. Contact</h2>
                 <p>If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us:</p>
                 <p class="mt-2">Email: admin@example.com</p>
             </section>
 
             <section>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">10. Changes to This Policy</h2>
+                <h2 class="theme-text text-xl font-semibold mb-3">10. Changes to This Policy</h2>
                 <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page. This policy was last updated on 30 June 2026.</p>
             </section>
         </div>
     </main>
 
-    <footer class="gradient-bg text-white mt-12 py-6" role="contentinfo">
+    <footer class="gradient-bg mt-12 py-6" role="contentinfo">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <p>&copy; 2026 Booking-System. All rights reserved.</p>
         </div>
     </footer>
+
+    <script type="module">
+        import { initThemeToggle } from './js/theme.js';
+        document.addEventListener('DOMContentLoaded', initThemeToggle);
+    </script>
 </body>
 </html>

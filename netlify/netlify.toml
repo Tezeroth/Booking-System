@@ -41,10 +41,10 @@
   [headers.values]
     Content-Security-Policy = """
       default-src 'self';
-      script-src 'self' https://apis.google.com https://www.gstatic.com https://cdn.tailwindcss.com 'unsafe-inline';
-      style-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com 'unsafe-inline';
+      script-src 'self' https://apis.google.com https://www.gstatic.com 'unsafe-inline';
+      style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
       font-src https://fonts.gstatic.com;
-      connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://www.gstatic.com https://*.firebaseio.com;
+      connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.firebaseio.com;
       frame-src 'none';
       img-src 'self' data:;
     """
