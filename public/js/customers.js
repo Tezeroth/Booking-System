@@ -171,71 +171,92 @@ export async function showCreateCustomerFromBooking(booking) {
     }
 
     // Show create customer form in a modal
-    const content = document.createElement('div');
-    content.innerHTML = `
-        <form id="create-customer-form" class="space-y-4">
-            <div>
-                <label for="customer-name" class="theme-text mb-1 block text-sm font-medium">Full Name <span class="text-red-500">*</span></label>
-                <input type="text" id="customer-name" value="${sanitiseText(booking.name)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="customer-email" class="theme-text mb-1 block text-sm font-medium">Email <span class="text-red-500">*</span></label>
-                <input type="email" id="customer-email" value="${sanitiseText(booking.email)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="customer-phone" class="theme-text mb-1 block text-sm font-medium">Phone</label>
-                <input type="tel" id="customer-phone" value="${sanitiseText(booking.phone || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="customer-company" class="theme-text mb-1 block text-sm font-medium">Company <span class="theme-muted text-xs">(optional)</span></label>
-                <input type="text" id="customer-company" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="customer-notes" class="theme-text mb-1 block text-sm font-medium">Notes <span class="theme-muted text-xs">(optional)</span></label>
-                <textarea id="customer-notes" rows="3" class="theme-input w-full resize-none rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400"></textarea>
-            </div>
-        </form>
-    `;
+    // Use a promise to capture form values before modal closes
+    const formData = await new Promise((resolve) => {
+        const content = document.createElement('div');
+        content.innerHTML = `
+            <form id="create-customer-form" class="space-y-4">
+                <div>
+                    <label for="customer-name" class="theme-text mb-1 block text-sm font-medium">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="customer-name" value="${sanitiseText(booking.name)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="customer-email" class="theme-text mb-1 block text-sm font-medium">Email <span class="text-red-500">*</span></label>
+                    <input type="email" id="customer-email" value="${sanitiseText(booking.email)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="customer-phone" class="theme-text mb-1 block text-sm font-medium">Phone</label>
+                    <input type="tel" id="customer-phone" value="${sanitiseText(booking.phone || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="customer-company" class="theme-text mb-1 block text-sm font-medium">Company <span class="theme-muted text-xs">(optional)</span></label>
+                    <input type="text" id="customer-company" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="customer-notes" class="theme-text mb-1 block text-sm font-medium">Notes <span class="theme-muted text-xs">(optional)</span></label>
+                    <textarea id="customer-notes" rows="3" class="theme-input w-full resize-none rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" id="create-customer-cancel" class="theme-btn-secondary px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="submit" class="theme-button px-4 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2">Create Customer</button>
+                </div>
+            </form>
+        `;
 
-    const modal = new Modal({
-        title: 'Create Customer Record',
-        content,
-        size: 'md',
-        buttons: [
-            { text: 'Cancel', value: 'cancel' },
-            { text: 'Create Customer', value: 'create', primary: true },
-        ],
+        const modal = new Modal({
+            title: 'Create Customer Record',
+            content,
+            size: 'md',
+            closable: true,
+            buttons: [], // No footer buttons — using form buttons instead
+        });
+
+        // Handle form submit — capture values before modal closes
+        const form = content.querySelector('#create-customer-form');
+        const cancelBtn = content.querySelector('#create-customer-cancel');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('customer-name').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const company = document.getElementById('customer-company').value.trim();
+            const notes = document.getElementById('customer-notes').value.trim();
+
+            if (!name || !email) {
+                Toast.error('Name and email are required.');
+                return;
+            }
+
+            modal.close();
+            resolve({ name, email, phone, company, notes });
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.close();
+            resolve(null);
+        });
+
+        modal.open();
     });
 
-    const result = await modal.open();
-    if (result === 'create') {
-        const name = document.getElementById('customer-name').value.trim();
-        const email = document.getElementById('customer-email').value.trim();
-        const phone = document.getElementById('customer-phone').value.trim();
-        const company = document.getElementById('customer-company').value.trim();
-        const notes = document.getElementById('customer-notes').value.trim();
+    if (!formData) return; // User cancelled
 
-        if (!name || !email) {
-            Toast.error('Name and email are required.');
-            return;
-        }
-
-        try {
-            const customerId = await createCustomer({
-                name,
-                email,
-                phone,
-                company,
-                notes,
-                linkedBookingId: booking.id,
-            });
-            Toast.success(`Customer "${name}" created successfully.`);
-            // Refresh customers list if on customers tab
-            await loadCustomers();
-        } catch (err) {
-            console.error('Error creating customer:', err);
-            Toast.error('Failed to create customer.');
-        }
+    try {
+        const customerId = await createCustomer({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            company: formData.company,
+            notes: formData.notes,
+            linkedBookingId: booking.id,
+        });
+        Toast.success(`Customer "${formData.name}" created successfully.`);
+        // Refresh customers list if on customers tab
+        await loadCustomers();
+    } catch (err) {
+        console.error('Error creating customer:', err);
+        Toast.error('Failed to create customer.');
     }
 }
 
@@ -244,63 +265,88 @@ export async function showCreateCustomerFromBooking(booking) {
  * @param {Object} customer
  */
 async function showEditCustomerModal(customer) {
-    const content = document.createElement('div');
-    content.innerHTML = `
-        <form id="edit-customer-form" class="space-y-4">
-            <div>
-                <label for="edit-customer-name" class="theme-text mb-1 block text-sm font-medium">Full Name <span class="text-red-500">*</span></label>
-                <input type="text" id="edit-customer-name" value="${sanitiseText(customer.name)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="edit-customer-email" class="theme-text mb-1 block text-sm font-medium">Email</label>
-                <input type="email" id="edit-customer-email" value="${sanitiseText(customer.email || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="edit-customer-phone" class="theme-text mb-1 block text-sm font-medium">Phone</label>
-                <input type="tel" id="edit-customer-phone" value="${sanitiseText(customer.phone || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="edit-customer-company" class="theme-text mb-1 block text-sm font-medium">Company</label>
-                <input type="text" id="edit-customer-company" value="${sanitiseText(customer.company || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-            </div>
-            <div>
-                <label for="edit-customer-notes" class="theme-text mb-1 block text-sm font-medium">Notes</label>
-                <textarea id="edit-customer-notes" rows="3" class="theme-input w-full resize-none rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">${sanitiseText(customer.notes || '')}</textarea>
-            </div>
-        </form>
-    `;
+    const formData = await new Promise((resolve) => {
+        const content = document.createElement('div');
+        content.innerHTML = `
+            <form id="edit-customer-form" class="space-y-4">
+                <div>
+                    <label for="edit-customer-name" class="theme-text mb-1 block text-sm font-medium">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="edit-customer-name" value="${sanitiseText(customer.name)}" required class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="edit-customer-email" class="theme-text mb-1 block text-sm font-medium">Email</label>
+                    <input type="email" id="edit-customer-email" value="${sanitiseText(customer.email || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="edit-customer-phone" class="theme-text mb-1 block text-sm font-medium">Phone</label>
+                    <input type="tel" id="edit-customer-phone" value="${sanitiseText(customer.phone || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="edit-customer-company" class="theme-text mb-1 block text-sm font-medium">Company</label>
+                    <input type="text" id="edit-customer-company" value="${sanitiseText(customer.company || '')}" class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                </div>
+                <div>
+                    <label for="edit-customer-notes" class="theme-text mb-1 block text-sm font-medium">Notes</label>
+                    <textarea id="edit-customer-notes" rows="3" class="theme-input w-full resize-none rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">${sanitiseText(customer.notes || '')}</textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" id="edit-customer-cancel" class="theme-btn-secondary px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="submit" class="theme-button px-4 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2">Save Changes</button>
+                </div>
+            </form>
+        `;
 
-    const modal = new Modal({
-        title: 'Edit Customer',
-        content,
-        size: 'md',
-        buttons: [
-            { text: 'Cancel', value: 'cancel' },
-            { text: 'Save Changes', value: 'save', primary: true },
-        ],
+        const modal = new Modal({
+            title: 'Edit Customer',
+            content,
+            size: 'md',
+            closable: true,
+            buttons: [],
+        });
+
+        const form = content.querySelector('#edit-customer-form');
+        const cancelBtn = content.querySelector('#edit-customer-cancel');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('edit-customer-name').value.trim();
+            const email = document.getElementById('edit-customer-email').value.trim();
+            const phone = document.getElementById('edit-customer-phone').value.trim();
+            const company = document.getElementById('edit-customer-company').value.trim();
+            const notes = document.getElementById('edit-customer-notes').value.trim();
+
+            if (!name) {
+                Toast.error('Customer name is required.');
+                return;
+            }
+
+            modal.close();
+            resolve({ name, email, phone, company, notes });
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.close();
+            resolve(null);
+        });
+
+        modal.open();
     });
 
-    const result = await modal.open();
-    if (result === 'save') {
-        const name = document.getElementById('edit-customer-name').value.trim();
-        const email = document.getElementById('edit-customer-email').value.trim();
-        const phone = document.getElementById('edit-customer-phone').value.trim();
-        const company = document.getElementById('edit-customer-company').value.trim();
-        const notes = document.getElementById('edit-customer-notes').value.trim();
+    if (!formData) return; // User cancelled
 
-        if (!name) {
-            Toast.error('Customer name is required.');
-            return;
-        }
-
-        try {
-            await updateCustomer(customer.id, { name, email, phone, company, notes });
-            Toast.success('Customer updated successfully.');
-            await loadCustomers();
-        } catch (err) {
-            console.error('Error updating customer:', err);
-            Toast.error('Failed to update customer.');
-        }
+    try {
+        await updateCustomer(customer.id, {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            company: formData.company,
+            notes: formData.notes,
+        });
+        Toast.success('Customer updated successfully.');
+        await loadCustomers();
+    } catch (err) {
+        console.error('Error updating customer:', err);
+        Toast.error('Failed to update customer.');
     }
 }
 
