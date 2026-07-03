@@ -3,12 +3,12 @@ rules_version = '2';
 /**
  * Firebase Firestore Security Rules
  * ==================================
- * Booking-System
+ * Booking-System — Business Management Suite v2
  *
  * Architecture:
  * - Public users can ONLY create bookings (with strict validation)
- * - Admin users can read, update, and delete bookings
- * - Admin is identified by UID (replace 'YOUR_ADMIN_UID_HERE' with actual UID)
+ * - Admin users have full CRUD access to all business collections
+ * - Admin is identified by UID: hwmYL3WsWBbuSMy1nPPOujbTt7f1
  *
  * NEVER expose read/write access to unauthenticated users beyond what's here.
  */
@@ -52,23 +52,81 @@ service cloud.firestore {
 
       // ---- READ (Admin only) ----
       allow read: if request.auth != null
-                  && request.auth.uid == 'YOUR_ADMIN_UID_HERE';
+                  && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
 
       // ---- UPDATE (Admin only) ----
       // Admin can update status only (prevents data tampering)
       allow update: if request.auth != null
-                    && request.auth.uid == 'YOUR_ADMIN_UID_HERE'
+                    && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1'
                     // Only allow updating the 'status' field
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['status']);
 
       // ---- DELETE (Admin only) ----
       allow delete: if request.auth != null
-                    && request.auth.uid == 'YOUR_ADMIN_UID_HERE';
+                    && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
 
       // ---- LIST (Admin only) ----
       allow list: if request.auth != null
-                  && request.auth.uid == 'YOUR_ADMIN_UID_HERE';
+                  && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // CUSTOMERS COLLECTION
+    // ============================================================
+    match /customers/{customerId} {
+      // Admin full access
+      allow read, list, delete: if request.auth != null
+                                 && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+      allow create: if request.auth != null
+                    && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1'
+                    && request.resource.data.keys().hasAll(['name', 'email', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string
+                    && request.resource.data.phone is string
+                    && request.resource.data.createdAt is timestamp;
+      allow update: if request.auth != null
+                    && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // QUOTES COLLECTION
+    // ============================================================
+    match /quotes/{quoteId} {
+      allow read, list, create, update, delete: if request.auth != null
+                                                && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // INVOICES COLLECTION
+    // ============================================================
+    match /invoices/{invoiceId} {
+      allow read, list, create, update, delete: if request.auth != null
+                                                && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // STAFF COLLECTION
+    // ============================================================
+    match /staff/{staffId} {
+      allow read, list, create, update, delete: if request.auth != null
+                                                && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // ROTA COLLECTION
+    // ============================================================
+    match /rota/{shiftId} {
+      allow read, list, create, update, delete: if request.auth != null
+                                                && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
+    }
+
+    // ============================================================
+    // SETTINGS COLLECTION
+    // ============================================================
+    match /settings/{settingId} {
+      allow read, list, create, update, delete: if request.auth != null
+                                                && request.auth.uid == 'hwmYL3WsWBbuSMy1nPPOujbTt7f1';
     }
 
     // ============================================================

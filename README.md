@@ -1,6 +1,6 @@
-# Booking-System
+# Booking-System — Business Management Suite v2
 
-A production-ready, secure booking system template built with **HTML5**, **Vanilla JavaScript (ES Modules)**, **Tailwind CSS**, **Firebase Authentication**, and **Firestore**.
+A production-ready, secure booking system evolving into a modular **Business Management Suite**. Built with **HTML5**, **Vanilla JavaScript (ES Modules)**, **Tailwind CSS**, **Firebase Authentication**, and **Firestore**.
 
 Designed for easy cloning and rebranding for client projects. **No frameworks** (React, Vue, Angular, etc.).
 
@@ -25,7 +25,7 @@ Designed for easy cloning and rebranding for client projects. **No frameworks** 
 ## Architecture Overview
 
 ```
-booking-template/
+booking-system/
 ├── public/                    # Deployed to Netlify
 │   ├── index.html             # Public booking page
 │   ├── admin.html             # Admin dashboard
@@ -34,16 +34,25 @@ booking-template/
 ├── src/
 │   ├── css/
 │   │   └── style.css          # Custom styles + CSS vars
-│   └── js/
-│       ├── config.js          # Firebase + branding config
-│       ├── validation.js      # Input validation + sanitisation
-│       ├── firestore.js       # Firestore CRUD abstraction
-│       ├── auth.js            # Firebase Auth (admin only)
-│       ├── booking.js         # Public booking form logic
-│       ├── admin.js           # Admin dashboard logic
-│       └── ui.js              # Shared UI helpers
+│   ├── js/
+│   │   ├── config.js          # Firebase + branding config
+│   │   ├── validation.js      # Input validation + sanitisation
+│   │   ├── firestore.js       # Firestore CRUD abstraction
+│   │   ├── auth.js            # Firebase Auth (admin only)
+│   │   ├── booking.js         # Public booking form logic
+│   │   ├── admin.js           # Admin dashboard logic
+│   │   ├── ui.js              # Shared UI helpers
+│   │   └── components/        # Reusable UI component library
+│   │       ├── index.js           # Barrel export
+│   │       ├── modal.js           # Modal dialog with focus trapping
+│   │       ├── confirm-dialog.js  # Promise-based confirmation dialog
+│   │       ├── toast.js           # Stackable toast notifications
+│   │       ├── table.js           # Data table with search/sort/pagination
+│   │       ├── status-badge.js    # Status badge renderer
+│   │       ├── loading-spinner.js # Overlay and inline spinners
+│   │       └── currency-formatter.js # Locale-aware currency formatting
 ├── firebase/
-│   ├── firestore.rules        # Production security rules
+│   ├── firestore.rules        # Production security rules (7 collections)
 │   └── firestore.indexes.json # Composite indexes
 ├── netlify/
 │   └── netlify.toml           # Deployment config
@@ -51,6 +60,18 @@ booking-template/
 ├── .gitignore
 └── package.json
 ```
+
+### Firestore Collections
+
+| Collection | Purpose | Access |
+|---|---|---|
+| `bookings` | Customer booking requests | Public create, admin CRUD |
+| `customers` | Customer profiles (created from accepted bookings) | Admin only |
+| `quotes` | Quotes with line items, VAT, totals | Admin only |
+| `invoices` | Invoices with payment tracking | Admin only |
+| `staff` | Staff profiles | Admin only |
+| `rota` | Shift scheduling and holidays | Admin only |
+| `settings` | Global business configuration | Admin only |
 
 ### Key Security Principles
 
@@ -186,36 +207,31 @@ For booking notifications, sign up at [EmailJS](https://www.emailjs.com/) (free 
 
 ## Git Workflow
 
-### Recommended Branch Strategy
+### Branch Architecture
 
 ```
-main              ← Production-ready, deployed to Netlify
-├── development   ← Integration branch
-│   ├── feature/*     ← Feature branches (e.g., feature/payments)
-│   └── fix/*         ← Bug fix branches
-└── hotfix/*       ← Emergency production fixes
+main                    ← Stable source of truth
+  └── netlify           ← Production deployment branch (deployed to Netlify)
+        └── business-suite-v2  ← Active development feature branch
 ```
 
-### Example Workflow
+**Important:** All development for the Business Management Suite v2 happens exclusively on the `business-suite-v2` branch. The `main` and `netlify` branches remain untouched until the feature set is complete and ready for production.
+
+### Development Workflow
 
 ```bash
-# Start a new feature
-git checkout -b feature/new-feature development
+# 1. Ensure you're on the development branch
+git checkout business-suite-v2
 
-# Work, commit, push
+# 2. Make your changes, then build and test locally
+npm run build
+
+# 3. Stage and commit
 git add .
-git commit -m "feat: add new feature"
-git push -u origin feature/new-feature
+git commit -m "feat: description of your change"
 
-# Merge to development (via PR)
-git checkout development
-git merge feature/new-feature
-
-# Release to main
-git checkout main
-git merge development
-git tag v1.0.0
-git push origin main --tags
+# 4. Push to remote
+git push -u origin business-suite-v2
 ```
 
 ### Commit Message Convention
@@ -421,6 +437,8 @@ booking-system/
 │   └── firestore.indexes.json
 ├── netlify/
 │   └── netlify.toml
+├── scripts/
+│   └── build.js
 ├── public/
 │   ├── index.html
 │   ├── admin.html
@@ -436,7 +454,16 @@ booking-system/
         ├── auth.js
         ├── booking.js
         ├── admin.js
-        └── ui.js
+        ├── ui.js
+        └── components/
+            ├── index.js
+            ├── modal.js
+            ├── confirm-dialog.js
+            ├── toast.js
+            ├── table.js
+            ├── status-badge.js
+            ├── loading-spinner.js
+            └── currency-formatter.js
 ```
 
 ---

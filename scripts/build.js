@@ -9,11 +9,13 @@ const { execSync } = require('child_process');
 const projectRoot = path.resolve(__dirname, '..');
 const files = [
   { src: 'src/js', dest: 'public/js' },
+  { src: 'src/js/components', dest: 'public/js/components' },
   { src: 'src/css/style.css', dest: 'public/css/style.css' },
 ];
 
 files.forEach(({ src, dest }) => {
-  const destDir = path.join(projectRoot, path.dirname(dest));
+  const destPath = path.join(projectRoot, dest);
+  const destDir = path.dirname(destPath);
   if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
   }
@@ -21,11 +23,15 @@ files.forEach(({ src, dest }) => {
   const srcPath = path.join(projectRoot, src);
   const stats = fs.statSync(srcPath);
   if (stats.isDirectory()) {
+    // Ensure the destination directory exists
+    if (!fs.existsSync(destPath)) {
+      fs.mkdirSync(destPath, { recursive: true });
+    }
     const items = fs.readdirSync(srcPath);
     items.forEach((item) => {
       if (item.endsWith('.js')) {
         const srcFile = path.join(srcPath, item);
-        const destFile = path.join(projectRoot, dest, item);
+        const destFile = path.join(destPath, item);
         fs.copyFileSync(srcFile, destFile);
         console.log(`Copied ${srcFile} -> ${destFile}`);
       }

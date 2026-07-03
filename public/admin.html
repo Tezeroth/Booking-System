@@ -232,6 +232,9 @@
     <script type="module">
         import { initAdmin } from './js/admin.js';
         import { initThemeToggle } from './js/theme.js';
+        // Import component library to make it available globally
+        import * as Components from './js/components/index.js';
+        window.Components = Components;
         document.addEventListener('DOMContentLoaded', () => {
             initThemeToggle();
             initAdmin();
