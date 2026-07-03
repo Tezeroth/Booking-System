@@ -2,6 +2,7 @@
  * Admin Dashboard Module
  * ======================
  * Full CRUD for bookings: list, search, filter, sort, update status, delete.
+ * Tab navigation: Bookings | Customers
  * Requires authentication — see auth.js.
  */
 
@@ -10,6 +11,9 @@ import { getBookings, updateBookingStatus, deleteBooking, getExpiredBookings } f
 import { showAlert, showLoading, hideLoading, formatDate, formatTime, setTextContent, createElement } from './ui.js';
 import { sanitiseText } from './validation.js';
 import { business, ADMIN_UID } from './config.js';
+import { initCustomersTab, showCreateCustomerFromBooking, wireCustomersSearch } from './customers.js';
+import { Toast } from './components/toast.js';
+import { confirmDialog } from './components/confirm-dialog.js';
 
 /** @module admin */
 
@@ -24,6 +28,7 @@ const DASHBOARD_NAV_ID = 'dashboard-nav';
 
 let currentBookings = [];
 let currentUser = null;
+let currentTab = 'bookings';
 
 /**
  * Initialise the admin dashboard.
@@ -34,7 +39,7 @@ export function initAdmin() {
         currentUser = user;
         if (user && isAdmin(user)) {
             showDashboard();
-            loadBookings();
+            switchTab('bookings');
         } else {
             showLoginForm();
         }
@@ -50,6 +55,16 @@ export function initAdmin() {
     const logoutBtn = document.getElementById(LOGOUT_BTN_ID);
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
+    }
+
+    // Tab navigation
+    const bookingsTab = document.getElementById('tab-bookings');
+    const customersTab = document.getElementById('tab-customers');
+    if (bookingsTab) {
+        bookingsTab.addEventListener('click', () => switchTab('bookings'));
+    }
+    if (customersTab) {
+        customersTab.addEventListener('click', () => switchTab('customers'));
     }
 
     // Search input
@@ -74,6 +89,48 @@ export function initAdmin() {
     const adminUidEl = document.getElementById('admin-uid-display');
     if (adminUidEl) {
         adminUidEl.textContent = `Admin UID: ${ADMIN_UID}`;
+    }
+
+    // Wire customers search
+    wireCustomersSearch();
+}
+
+/**
+ * Switch between admin tabs.
+ * @param {'bookings'|'customers'} tab
+ */
+function switchTab(tab) {
+    currentTab = tab;
+
+    // Update tab button styles
+    const bookingsTab = document.getElementById('tab-bookings');
+    const customersTab = document.getElementById('tab-customers');
+    const bookingsSection = document.getElementById('bookings-section');
+    const customersSection = document.getElementById('customers-section');
+
+    // Reset all tabs
+    [bookingsTab, customersTab].forEach((btn) => {
+        if (btn) {
+            btn.classList.remove('bg-purple-600', 'text-white');
+            btn.classList.add('theme-btn-secondary');
+        }
+    });
+
+    // Hide all sections
+    if (bookingsSection) bookingsSection.classList.add('hidden');
+    if (customersSection) customersSection.classList.add('hidden');
+
+    // Show selected tab
+    if (tab === 'bookings' && bookingsTab && bookingsSection) {
+        bookingsTab.classList.remove('theme-btn-secondary');
+        bookingsTab.classList.add('bg-purple-600', 'text-white');
+        bookingsSection.classList.remove('hidden');
+        loadBookings();
+    } else if (tab === 'customers' && customersTab && customersSection) {
+        customersTab.classList.remove('theme-btn-secondary');
+        customersTab.classList.add('bg-purple-600', 'text-white');
+        customersSection.classList.remove('hidden');
+        initCustomersTab();
     }
 }
 
@@ -237,7 +294,7 @@ function renderBookings(bookings) {
     if (filtered.length === 0) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.setAttribute('colspan', '7');
+        cell.setAttribute('colspan', '8');
         cell.className = 'text-center py-8 theme-muted';
         cell.textContent = term ? 'No bookings match your search.' : 'No bookings found.';
         row.appendChild(cell);
@@ -306,6 +363,12 @@ function renderBookings(bookings) {
             actionsContainer.appendChild(archiveBtn);
         }
 
+        // Accept button — creates a customer record
+        if (booking.status === 'pending' || booking.status === 'confirmed') {
+            const acceptBtn = createButton('Accept', 'theme-btn-success', () => handleAcceptBooking(booking));
+            actionsContainer.appendChild(acceptBtn);
+        }
+
         // Delete button
         const deleteBtn = createButton('Delete', 'theme-btn-danger', () => confirmDelete(booking.id, booking.name));
         actionsContainer.appendChild(deleteBtn);
@@ -315,6 +378,16 @@ function renderBookings(bookings) {
 
         tbody.appendChild(row);
     });
+}
+
+/**
+ * Handle Accept booking — creates a customer record.
+ * @param {Object} booking
+ */
+async function handleAcceptBooking(booking) {
+    await showCreateCustomerFromBooking(booking);
+    // Refresh bookings to reflect any status changes
+    await loadBookings();
 }
 
 /**
@@ -357,25 +430,28 @@ async function updateStatus(id, status) {
  * @param {string} id
  * @param {string} name
  */
-function confirmDelete(id, name) {
-    const sanitisedName = sanitiseText(name || 'this booking');
-    if (!confirm(`Are you sure you want to permanently delete ${sanitisedName}'s booking? This cannot be undone.`)) {
-        return;
-    }
+async function confirmDelete(id, name) {
+    const confirmed = await confirmDialog({
+        title: 'Delete Booking',
+        message: `Are you sure you want to permanently delete ${sanitiseText(name || 'this booking')}'s booking? This cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true,
+    });
+
+    if (!confirmed) return;
 
     showLoading(LOADING_ID);
-    deleteBooking(id)
-        .then(() => {
-            showAlert('Booking deleted permanently.', 'success');
-            return loadBookings();
-        })
-        .catch((err) => {
-            console.error('Delete error:', err);
-            showAlert('Failed to delete booking.', 'error');
-        })
-        .finally(() => {
-            hideLoading(LOADING_ID);
-        });
+    try {
+        await deleteBooking(id);
+        showAlert('Booking deleted permanently.', 'success');
+        await loadBookings();
+    } catch (err) {
+        console.error('Delete error:', err);
+        showAlert('Failed to delete booking.', 'error');
+    } finally {
+        hideLoading(LOADING_ID);
+    }
 }
 
 /**

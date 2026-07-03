@@ -100,64 +100,120 @@
     <!-- Admin Dashboard Content (hidden until authenticated) -->
     <div id="admin-content" class="max-w-7xl mx-auto px-4 py-8 hidden">
         <main id="main-content">
-            <!-- Dashboard Header -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-                <div>
-                    <h1 class="theme-text text-2xl font-bold">Bookings</h1>
-                    <p id="booking-count" class="theme-muted text-sm">Loading...</p>
-                </div>
-                <div class="flex gap-3">
-                    <button id="refresh-bookings" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2" onclick="location.reload()">
-                        Refresh
-                    </button>
-                </div>
+            <!-- Tab Navigation -->
+            <div class="flex gap-2 mb-6">
+                <button id="tab-bookings" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2">
+                    Bookings
+                </button>
+                <button id="tab-customers" class="theme-btn-secondary px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Customers
+                </button>
             </div>
 
-            <!-- Filters -->
-            <div class="theme-panel mb-6 rounded-xl p-4 shadow-md">
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                        <label for="admin-search" class="sr-only">Search bookings</label>
-                        <input type="search" id="admin-search" placeholder="Search by name, email, or phone..." class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+            <!-- Bookings Section -->
+            <div id="bookings-section">
+                <!-- Dashboard Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <div>
+                        <h1 class="theme-text text-2xl font-bold">Bookings</h1>
+                        <p id="booking-count" class="theme-muted text-sm">Loading...</p>
                     </div>
-                    <div class="w-full md:w-48">
-                        <label for="admin-status-filter" class="sr-only">Filter by status</label>
-                        <select id="admin-status-filter" class="theme-input w-full rounded-lg bg-transparent px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-                            <option value="all">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="archived">Archived</option>
-                        </select>
+                    <div class="flex gap-3">
+                        <button id="refresh-bookings" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2" onclick="location.reload()">
+                            Refresh
+                        </button>
                     </div>
                 </div>
+
+                <!-- Filters -->
+                <div class="theme-panel mb-6 rounded-xl p-4 shadow-md">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="admin-search" class="sr-only">Search bookings</label>
+                            <input type="search" id="admin-search" placeholder="Search by name, email, or phone..." class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                        <div class="w-full md:w-48">
+                            <label for="admin-status-filter" class="sr-only">Filter by status</label>
+                            <select id="admin-status-filter" class="theme-input w-full rounded-lg bg-transparent px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                                <option value="all">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Table -->
+                <div class="theme-panel overflow-hidden rounded-xl shadow-md">
+                    <div class="overflow-x-auto">
+                        <table class="w-full" role="table" aria-label="Bookings list">
+                            <thead>
+                        <tr class="theme-table-header">
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Time</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body">
+                                <!-- Populated by admin.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin UID reference -->
+                <p id="admin-uid-display" class="theme-muted mt-4 text-center text-xs"></p>
             </div>
 
-            <!-- Bookings Table -->
-            <div class="theme-panel overflow-hidden rounded-xl shadow-md">
-                <div class="overflow-x-auto">
-                    <table class="w-full" role="table" aria-label="Bookings list">
-                        <thead>
-                    <tr class="theme-table-header">
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Time</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bookings-table-body">
-                            <!-- Populated by admin.js -->
-                        </tbody>
-                    </table>
+            <!-- Customers Section (hidden by default) -->
+            <div id="customers-section" class="hidden">
+                <!-- Customers Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <div>
+                        <h1 class="theme-text text-2xl font-bold">Customers</h1>
+                        <p id="customers-count" class="theme-muted text-sm">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Customers Search -->
+                <div class="theme-panel mb-6 rounded-xl p-4 shadow-md">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="customers-search" class="sr-only">Search customers</label>
+                            <input type="search" id="customers-search" placeholder="Search by name, email, phone, or company..." class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customers Table -->
+                <div class="theme-panel overflow-hidden rounded-xl shadow-md">
+                    <div class="overflow-x-auto">
+                        <table class="w-full" role="table" aria-label="Customers list">
+                            <thead>
+                                <tr class="theme-table-header">
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Company</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Bookings</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body">
+                                <!-- Populated by customers.js -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-            <!-- Admin UID reference -->
-            <p id="admin-uid-display" class="theme-muted mt-4 text-center text-xs"></p>
         </main>
     </div>
 
