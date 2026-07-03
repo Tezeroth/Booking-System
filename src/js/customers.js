@@ -6,7 +6,8 @@
  */
 
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer, findCustomerByEmail } from './firestore-customers.js';
-import { showAlert, formatDate, sanitiseText } from './ui.js';
+import { showAlert, formatDate } from './ui.js';
+import { sanitiseText } from './validation.js';
 import { Modal } from './components/modal.js';
 import { confirmDialog } from './components/confirm-dialog.js';
 import { Toast } from './components/toast.js';
