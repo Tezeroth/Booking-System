@@ -8,6 +8,7 @@
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer, findCustomerByEmail } from './firestore-customers.js';
 import { showAlert, formatDate } from './ui.js';
 import { sanitiseText } from './validation.js';
+import { showCreateQuoteModal } from './quotes.js';
 import { Modal } from './components/modal.js';
 import { confirmDialog } from './components/confirm-dialog.js';
 import { Toast } from './components/toast.js';
@@ -121,6 +122,14 @@ function renderCustomers(customers) {
         editBtn.type = 'button';
         editBtn.addEventListener('click', () => showEditCustomerModal(customer));
         actionsContainer.appendChild(editBtn);
+
+        // Create Quote button
+        const quoteBtn = document.createElement('button');
+        quoteBtn.className = 'theme-btn-action theme-btn-success';
+        quoteBtn.textContent = 'Quote';
+        quoteBtn.type = 'button';
+        quoteBtn.addEventListener('click', () => showCreateQuoteModal(customer));
+        actionsContainer.appendChild(quoteBtn);
 
         // View linked bookings button
         if (customer.linkedBookingIds && customer.linkedBookingIds.length > 0) {
