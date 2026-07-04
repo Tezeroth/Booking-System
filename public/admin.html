@@ -101,12 +101,15 @@
     <div id="admin-content" class="max-w-7xl mx-auto px-4 py-8 hidden">
         <main id="main-content">
             <!-- Tab Navigation -->
-            <div class="flex gap-2 mb-6">
+            <div class="flex gap-2 mb-6 flex-wrap">
                 <button id="tab-bookings" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2">
                     Bookings
                 </button>
                 <button id="tab-customers" class="theme-btn-secondary px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">
                     Customers
+                </button>
+                <button id="tab-quotes" class="theme-btn-secondary px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Quotes
                 </button>
             </div>
 
@@ -209,6 +212,61 @@
                             </thead>
                             <tbody id="customers-table-body">
                                 <!-- Populated by customers.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quotes Section (hidden by default) -->
+            <div id="quotes-section" class="hidden">
+                <!-- Quotes Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <div>
+                        <h1 class="theme-text text-2xl font-bold">Quotes</h1>
+                        <p id="quotes-count" class="theme-muted text-sm">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Quotes Search & Filter -->
+                <div class="theme-panel mb-6 rounded-xl p-4 shadow-md">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="quotes-search" class="sr-only">Search quotes</label>
+                            <input type="search" id="quotes-search" placeholder="Search by quote number, customer name, or email..." class="theme-input w-full rounded-lg px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                        <div class="w-full md:w-48">
+                            <label for="quotes-status-filter" class="sr-only">Filter by status</label>
+                            <select id="quotes-status-filter" class="theme-input w-full rounded-lg bg-transparent px-4 py-2 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                                <option value="all">All Statuses</option>
+                                <option value="draft">Draft</option>
+                                <option value="sent">Sent</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="expired">Expired</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quotes Table -->
+                <div class="theme-panel overflow-hidden rounded-xl shadow-md">
+                    <div class="overflow-x-auto">
+                        <table class="w-full" role="table" aria-label="Quotes list">
+                            <thead>
+                                <tr class="theme-table-header">
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Quote #</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Customer</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Valid Until</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quotes-table-body">
+                                <!-- Populated by quotes.js -->
                             </tbody>
                         </table>
                     </div>

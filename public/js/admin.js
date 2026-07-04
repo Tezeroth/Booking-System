@@ -12,6 +12,7 @@ import { showAlert, showLoading, hideLoading, formatDate, formatTime, setTextCon
 import { sanitiseText } from './validation.js';
 import { business, ADMIN_UID } from './config.js';
 import { initCustomersTab, showCreateCustomerFromBooking, wireCustomersSearch } from './customers.js';
+import { initQuotesTab, showCreateQuoteModal, wireQuotesSearch } from './quotes.js';
 import { Toast } from './components/toast.js';
 import { confirmDialog } from './components/confirm-dialog.js';
 
@@ -60,11 +61,15 @@ export function initAdmin() {
     // Tab navigation
     const bookingsTab = document.getElementById('tab-bookings');
     const customersTab = document.getElementById('tab-customers');
+    const quotesTab = document.getElementById('tab-quotes');
     if (bookingsTab) {
         bookingsTab.addEventListener('click', () => switchTab('bookings'));
     }
     if (customersTab) {
         customersTab.addEventListener('click', () => switchTab('customers'));
+    }
+    if (quotesTab) {
+        quotesTab.addEventListener('click', () => switchTab('quotes'));
     }
 
     // Search input
@@ -93,11 +98,14 @@ export function initAdmin() {
 
     // Wire customers search
     wireCustomersSearch();
+
+    // Wire quotes search and filter
+    wireQuotesSearch();
 }
 
 /**
  * Switch between admin tabs.
- * @param {'bookings'|'customers'} tab
+ * @param {'bookings'|'customers'|'quotes'} tab
  */
 function switchTab(tab) {
     currentTab = tab;
@@ -105,11 +113,13 @@ function switchTab(tab) {
     // Update tab button styles
     const bookingsTab = document.getElementById('tab-bookings');
     const customersTab = document.getElementById('tab-customers');
+    const quotesTab = document.getElementById('tab-quotes');
     const bookingsSection = document.getElementById('bookings-section');
     const customersSection = document.getElementById('customers-section');
+    const quotesSection = document.getElementById('quotes-section');
 
     // Reset all tabs
-    [bookingsTab, customersTab].forEach((btn) => {
+    [bookingsTab, customersTab, quotesTab].forEach((btn) => {
         if (btn) {
             btn.classList.remove('bg-purple-600', 'text-white');
             btn.classList.add('theme-btn-secondary');
@@ -119,6 +129,7 @@ function switchTab(tab) {
     // Hide all sections
     if (bookingsSection) bookingsSection.classList.add('hidden');
     if (customersSection) customersSection.classList.add('hidden');
+    if (quotesSection) quotesSection.classList.add('hidden');
 
     // Show selected tab
     if (tab === 'bookings' && bookingsTab && bookingsSection) {
@@ -131,6 +142,11 @@ function switchTab(tab) {
         customersTab.classList.add('bg-purple-600', 'text-white');
         customersSection.classList.remove('hidden');
         initCustomersTab();
+    } else if (tab === 'quotes' && quotesTab && quotesSection) {
+        quotesTab.classList.remove('theme-btn-secondary');
+        quotesTab.classList.add('bg-purple-600', 'text-white');
+        quotesSection.classList.remove('hidden');
+        initQuotesTab();
     }
 }
 
