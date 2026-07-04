@@ -7,7 +7,8 @@
 
 import { getQuotes, createQuote, updateQuote, updateQuoteStatus, deleteQuote, duplicateQuote, getQuotesByCustomer, calculateQuoteTotals } from './firestore-quotes.js';
 import { getCustomers } from './firestore-customers.js';
-import { formatDate, sanitiseText } from './ui.js';
+import { formatDate } from './ui.js';
+import { sanitiseText } from './validation.js';
 import { Modal } from './components/modal.js';
 import { confirmDialog } from './components/confirm-dialog.js';
 import { Toast } from './components/toast.js';
