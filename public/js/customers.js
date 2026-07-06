@@ -175,6 +175,18 @@ export async function showCreateCustomerFromBooking(booking) {
             const { linkBookingToCustomer } = await import('./firestore-customers.js');
             await linkBookingToCustomer(existing.id, booking.id);
             Toast.success(`Booking linked to ${existing.name}.`);
+
+            // Offer to create a quote for this customer
+            const createQuote = await confirmDialog({
+                title: 'Create Quote?',
+                message: `Would you like to create a new quote for ${existing.name}?`,
+                confirmText: 'Create Quote',
+                cancelText: 'Not Now',
+            });
+            if (createQuote) {
+                const { showCreateQuoteModal } = await import('./quotes.js');
+                await showCreateQuoteModal(existing);
+            }
         }
         return;
     }
@@ -263,6 +275,18 @@ export async function showCreateCustomerFromBooking(booking) {
         Toast.success(`Customer "${formData.name}" created successfully.`);
         // Refresh customers list if on customers tab
         await loadCustomers();
+
+        // Offer to create a quote for the new customer
+        const createQuote = await confirmDialog({
+            title: 'Create Quote?',
+            message: `Would you like to create a new quote for ${formData.name}?`,
+            confirmText: 'Create Quote',
+            cancelText: 'Not Now',
+        });
+        if (createQuote) {
+            const { showCreateQuoteModal } = await import('./quotes.js');
+            await showCreateQuoteModal({ id: customerId, name: formData.name, email: formData.email });
+        }
     } catch (err) {
         console.error('Error creating customer:', err);
         Toast.error('Failed to create customer.');

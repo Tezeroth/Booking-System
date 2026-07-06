@@ -379,10 +379,16 @@ function renderBookings(bookings) {
             actionsContainer.appendChild(archiveBtn);
         }
 
-        // Accept button — creates a customer record
+        // Add button — creates a customer record from booking
         if (booking.status === 'pending' || booking.status === 'confirmed') {
-            const acceptBtn = createButton('Accept', 'theme-btn-success', () => handleAcceptBooking(booking));
+            const acceptBtn = createButton('Add', 'theme-btn-success', () => handleAcceptBooking(booking));
             actionsContainer.appendChild(acceptBtn);
+        }
+
+        // Quote button — creates customer if needed, then opens quote modal
+        if (booking.status === 'pending' || booking.status === 'confirmed') {
+            const quoteBtn = createButton('Quote', 'theme-btn-teal', () => handleBookingToQuote(booking));
+            actionsContainer.appendChild(quoteBtn);
         }
 
         // Delete button
@@ -404,6 +410,46 @@ async function handleAcceptBooking(booking) {
     await showCreateCustomerFromBooking(booking);
     // Refresh bookings to reflect any status changes
     await loadBookings();
+}
+
+/**
+ * Handle booking-to-quote flow — auto-creates customer if needed, then opens quote modal.
+ * @param {Object} booking
+ */
+async function handleBookingToQuote(booking) {
+    const { findCustomerByEmail, createCustomer } = await import('./firestore-customers.js');
+    const { showCreateQuoteModal } = await import('./quotes.js');
+
+    showLoading(LOADING_ID);
+    try {
+        // Check if customer already exists by email
+        let customer = await findCustomerByEmail(booking.email);
+
+        if (!customer) {
+            // Auto-create customer from booking data
+            const customerId = await createCustomer({
+                name: booking.name,
+                email: booking.email,
+                phone: booking.phone || '',
+                notes: '',
+                linkedBookingId: booking.id,
+            });
+            Toast.success(`Customer "${booking.name}" created automatically.`);
+            customer = { id: customerId, name: booking.name, email: booking.email };
+        }
+
+        hideLoading(LOADING_ID);
+
+        // Open quote modal with the customer data
+        await showCreateQuoteModal({ id: customer.id, name: customer.name, email: customer.email });
+
+        // Refresh bookings
+        await loadBookings();
+    } catch (err) {
+        console.error('Error in booking-to-quote flow:', err);
+        hideLoading(LOADING_ID);
+        Toast.error('Failed to create quote from booking.');
+    }
 }
 
 /**

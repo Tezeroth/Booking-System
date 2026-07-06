@@ -87,7 +87,7 @@ function renderQuotes(quotes) {
     if (filtered.length === 0) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.setAttribute('colspan', '7');
+        cell.setAttribute('colspan', '8');
         cell.className = 'text-center py-8 theme-muted';
         cell.textContent = term ? 'No quotes match your search.' : 'No quotes yet. Create one from a customer.';
         row.appendChild(cell);
@@ -136,9 +136,9 @@ function renderQuotes(quotes) {
         const dupBtn = createActionBtn('Duplicate', 'theme-btn-gray', () => handleDuplicateQuote(quote));
         actionsContainer.appendChild(dupBtn);
 
-        // Status action buttons
-        if (quote.status === 'draft') {
-            const sendBtn = createActionBtn('Send', 'theme-btn-success', () => updateStatus(quote.id, 'sent'));
+        // Send button — opens email client and marks as sent (re-sendable)
+        if (quote.status === 'draft' || quote.status === 'sent') {
+            const sendBtn = createActionBtn('Send', 'theme-btn-success', () => handleSendQuote(quote));
             actionsContainer.appendChild(sendBtn);
         }
         if (quote.status === 'sent') {
@@ -148,18 +148,13 @@ function renderQuotes(quotes) {
             actionsContainer.appendChild(rejectBtn);
         }
         if (quote.status === 'accepted') {
-            // Convert to invoice button — will be wired in Milestone 4
-            const invoiceBtn = createActionBtn('Invoice', 'theme-btn-teal', () => {
-                Toast.info('Invoice conversion coming in next update.');
-            });
-            actionsContainer.appendChild(invoiceBtn);
+            const resendBtn = createActionBtn('Resend', 'theme-btn-teal', () => handleSendQuote(quote));
+            actionsContainer.appendChild(resendBtn);
         }
 
-        // Delete button (only for drafts)
-        if (quote.status === 'draft') {
-            const deleteBtn = createActionBtn('Delete', 'theme-btn-danger', () => handleDeleteQuote(quote));
-            actionsContainer.appendChild(deleteBtn);
-        }
+        // Delete button with confirmation
+        const deleteBtn = createActionBtn('Delete', 'theme-btn-danger', () => handleDeleteQuote(quote));
+        actionsContainer.appendChild(deleteBtn);
 
         actionsCell.appendChild(actionsContainer);
         row.appendChild(actionsCell);
@@ -216,26 +211,32 @@ export async function showCreateQuoteModal(customer) {
                 </div>
 
                 <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="theme-text text-sm font-medium">Line Items</label>
-                        <button type="button" id="add-line-item" class="text-sm text-purple-600 hover:underline">+ Add Item</button>
-                    </div>
-                    <div id="line-items-container">
-                        <div class="line-item grid grid-cols-12 gap-2 mb-2 items-start">
-                            <div class="col-span-5">
-                                <input type="text" name="item-desc[]" placeholder="Description" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-                            </div>
-                            <div class="col-span-2">
-                                <input type="number" name="item-qty[]" placeholder="Qty" min="1" step="1" value="1" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-                            </div>
-                            <div class="col-span-3">
-                                <input type="number" name="item-price[]" placeholder="Unit price (£)" min="0" step="0.01" value="0" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
-                            </div>
-                            <div class="col-span-2 flex items-center">
-                                <button type="button" class="remove-item text-red-500 hover:text-red-700 text-lg font-bold">&times;</button>
-                            </div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="theme-text text-sm font-medium">Line Items / Services</label>
+                    <button type="button" id="add-line-item" class="text-sm text-purple-600 hover:underline">+ Add Item</button>
+                </div>
+                <div class="grid grid-cols-12 gap-2 mb-1 text-xs font-semibold theme-muted uppercase tracking-wide">
+                    <div class="col-span-5 pl-3">Description</div>
+                    <div class="col-span-2 pl-3">Quantity</div>
+                    <div class="col-span-3 pl-3">Unit Price</div>
+                    <div class="col-span-2"></div>
+                </div>
+                <div id="line-items-container">
+                    <div class="line-item grid grid-cols-12 gap-2 mb-2 items-start">
+                        <div class="col-span-5">
+                            <input type="text" name="item-desc[]" placeholder="Description" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                        <div class="col-span-2">
+                            <input type="number" name="item-qty[]" placeholder="Qty" min="1" step="1" value="1" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                        <div class="col-span-3">
+                            <input type="number" name="item-price[]" placeholder="Unit price (£)" min="0" step="0.01" value="0" required class="theme-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-purple-400">
+                        </div>
+                        <div class="col-span-2 flex items-center">
+                            <button type="button" class="remove-item text-red-500 hover:text-red-700 text-lg font-bold">&times;</button>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <div class="theme-surface rounded-lg p-4 space-y-1 text-sm">
@@ -432,8 +433,14 @@ async function showEditQuoteModal(quote) {
 
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <label class="theme-text text-sm font-medium">Line Items</label>
+                        <label class="theme-text text-sm font-medium">Line Items / Services</label>
                         <button type="button" id="edit-add-line-item" class="text-sm text-purple-600 hover:underline">+ Add Item</button>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 mb-1 text-xs font-semibold theme-muted uppercase tracking-wide">
+                        <div class="col-span-5 pl-3">Description</div>
+                        <div class="col-span-2 pl-3">Quantity</div>
+                        <div class="col-span-3 pl-3">Unit Price</div>
+                        <div class="col-span-2"></div>
                     </div>
                     <div id="edit-line-items-container">
                         ${(quote.lineItems || []).map((item, i) => `
@@ -665,6 +672,40 @@ async function handleDeleteQuote(quote) {
     } catch (err) {
         console.error('Error deleting quote:', err);
         Toast.error('Failed to delete quote.');
+    }
+}
+
+/**
+ * Handle sending a quote — opens default email client and marks as sent.
+ * @param {Object} quote
+ */
+async function handleSendQuote(quote) {
+    // Build a summary of line items for the email body
+    const lineItemsSummary = (quote.lineItems || [])
+        .map(item => `  - ${item.description}: ${item.quantity} × ${formatCurrency(item.unitPrice)}`)
+        .join('\n');
+
+    const subject = encodeURIComponent(`Quote ${quote.quoteNumber} from Booking-System`);
+    const body = encodeURIComponent(
+        `Dear ${quote.customerName},\n\n` +
+        `Please find your quote (${quote.quoteNumber}) attached below.\n\n` +
+        `---\n${lineItemsSummary}\n---\n\n` +
+        `Total: ${formatCurrency(quote.total || 0)}\n` +
+        `Valid until: ${quote.validUntil ? formatDate(quote.validUntil) : 'N/A'}\n\n` +
+        `Kind regards,\nBooking-System`
+    );
+
+    // Open default email client
+    window.open(`mailto:${quote.customerEmail}?subject=${subject}&body=${body}`, '_blank');
+
+    // Mark as sent in the system
+    try {
+        await updateQuoteStatus(quote.id, 'sent');
+        Toast.success(`Quote ${quote.quoteNumber} sent to ${quote.customerEmail}.`);
+        await loadQuotes();
+    } catch (err) {
+        console.error('Error updating quote status after send:', err);
+        Toast.error('Email opened but failed to update quote status.');
     }
 }
 

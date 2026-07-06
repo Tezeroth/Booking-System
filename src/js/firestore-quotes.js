@@ -140,15 +140,34 @@ export async function getQuotes(options = {}) {
     }
 
     const q = query(collection(db, COLLECTION), ...constraints);
-    const snapshot = await getDocs(q);
 
-    const quotes = [];
-    snapshot.forEach((docSnap) => {
-        quotes.push({ id: docSnap.id, ...docSnap.data() });
-    });
+    try {
+        const snapshot = await getDocs(q);
+        const quotes = [];
+        snapshot.forEach((docSnap) => {
+            quotes.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        log('verbose', `Fetched ${quotes.length} quotes`);
+        return quotes;
+    } catch (err) {
+        // If composite query fails (e.g. missing index), fall back to fetching all and filtering client-side
+        log('error', `Composite query failed for quotes (statusFilter=${statusFilter}): ${err.code} — ${err.message}`);
+        console.warn('Quotes composite query failed, falling back to unfiltered fetch:', err.message);
 
-    log('verbose', `Fetched ${quotes.length} quotes`);
-    return quotes;
+        const fallbackQ = query(collection(db, COLLECTION), orderBy(sortField, sortDir));
+        const snapshot = await getDocs(fallbackQ);
+        let quotes = [];
+        snapshot.forEach((docSnap) => {
+            quotes.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        if (statusFilter && statusFilter !== 'all') {
+            quotes = quotes.filter(q => q.status === statusFilter);
+        }
+
+        log('verbose', `Fetched ${quotes.length} quotes (fallback mode)`);
+        return quotes;
+    }
 }
 
 /**
