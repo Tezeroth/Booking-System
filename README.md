@@ -27,7 +27,8 @@ Designed for easy cloning and rebranding for client projects. **No frameworks** 
 ```
 booking-system/
 ├── public/                    # Deployed to Netlify
-│   ├── index.html             # Public booking page
+│   ├── index.html             # Hero landing page (new) — link to booking.html
+│   ├── booking.html           # Public booking form (moved from index.html)
 │   ├── admin.html             # Admin dashboard
 │   ├── privacy.html           # GDPR privacy policy
 │   └── _redirects             # Netlify SPA redirects
@@ -421,6 +422,52 @@ The modular structure makes it easy to add features without major refactoring.
 1. Enable additional Firebase Auth providers (Google, etc.)
 2. Create a `customers` collection linked to auth UID
 3. Pre-fill booking form with customer data
+
+---
+
+## Images & Media Placeholder Guide
+
+The landing page (`public/index.html`) includes multiple image placeholders marked with `<!-- IMAGE PLACEHOLDER -->` comments. Create an `images/` folder inside `public/` to store your media.
+
+### Folder Structure
+
+```
+public/
+├── images/
+│   ├── hero-bg.jpg          # Hero background (recommended: 1920x1080)
+│   ├── service-consultation.jpg
+│   ├── service-appointments.jpg
+│   └── service-support.jpg
+├── index.html               # Landing page (hero + service cards)
+├── booking.html             # Booking form
+├── admin.html               # Admin dashboard
+└── privacy.html             # Privacy policy
+```
+
+### Where to Replace Images
+
+| Location in `index.html` | Comment tag | What to do |
+|---|---|---|
+| **Hero section** | `<!-- IMAGE PLACEHOLDER: Replace the gradient above with a background image -->` | Replace `style="background: var(--accent-gradient);"` with a background image URL. See the example comment directly above. |
+| **Service Card 1** (Consultation) | `<!-- IMAGE PLACEHOLDER: Replace the gradient below with a service image -->` | Replace the `<div class="h-48" style="...">` with an `<img>` tag (example commented in the code) |
+| **Service Card 2** (Appointments) | Same as above | Same as above |
+| **Service Card 3** (Follow-Up Support) | Same as above | Same as above |
+
+### Hero Background Image Example
+
+Replace the `<section>` style attribute with:
+
+```html
+<section style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/hero-bg.jpg'); background-size: cover; background-position: center;" aria-label="Hero banner">
+```
+
+### Service Card Image Example
+
+Replace each gradient `<div>` with:
+
+```html
+<img src="images/service-consultation.jpg" alt="Consultation service" class="w-full h-48 object-cover">
+```
 
 ---
 
