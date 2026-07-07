@@ -1,7 +1,7 @@
 # Netlify Redirects
 # Serve existing files directly (JS, CSS, images, etc.)
-/*.js    /:splat    200
-/*.css    /:splat    200
+/js/*    /js/:splat    200
+/css/*    /css/:splat    200
 /*.json    /:splat    200
 /*.png    /:splat    200
 /*.svg    /:splat    200
