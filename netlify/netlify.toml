@@ -19,7 +19,7 @@
   FIREBASE_MESSAGING_SENDER_ID = "your-sender-id"
   FIREBASE_APP_ID = "your-app-id"
 
-# Redirects (also handled by public/_redirects)
+# SPA / Clean URL rewrite (Netlify serves existing static files before applying rewrites)
 [[redirects]]
   from = "/*"
   to = "/index.html"

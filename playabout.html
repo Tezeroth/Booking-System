@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>A-Frame GLSL Template</title>
+
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+    <script>
+
+    //-------------------------------------------------------
+    // PASTE YOUR VERTEX SHADER BELOW
+    //-------------------------------------------------------
+
+    const vertexShader = `
+
+    varying vec2 vUv;
+    varying vec3 vNormal;
+
+    void main(){
+
+        vUv = uv;
+        vNormal = normal;
+
+        gl_Position =
+            projectionMatrix *
+            modelViewMatrix *
+            vec4(position,1.0);
+
+    }
+
+    `;
+
+    //-------------------------------------------------------
+    // END VERTEX SHADER
+    //-------------------------------------------------------
+
+
+
+    //-------------------------------------------------------
+    // PASTE YOUR FRAGMENT SHADER BELOW
+    //-------------------------------------------------------
+
+    const fragmentShader = `
+
+    uniform float time;
+
+varying vec2 vUv;
+
+void main(){
+
+    vec2 uv = vUv;
+
+    uv -= 0.5;
+
+    float d = length(uv);
+
+    float rings = sin(d*40.0-time*5.0);
+
+    vec3 colour = vec3(
+        rings,
+        0.3,
+        1.0-rings
+    );
+
+    gl_FragColor = vec4(colour,1.0);
+
+}
+
+    `;
+
+    //-------------------------------------------------------
+    // END FRAGMENT SHADER
+    //-------------------------------------------------------
+
+
+
+    AFRAME.registerShader('customshader',{
+
+        schema:{},
+
+        init:function(data){
+
+            this.material = new THREE.ShaderMaterial({
+
+                uniforms:{
+                    time:{value:0}
+                },
+
+                vertexShader:vertexShader,
+                fragmentShader:fragmentShader
+
+            });
+
+        },
+
+        tick:function(time){
+
+            this.material.uniforms.time.value = time*0.001;
+
+        }
+
+    });
+
+    </script>
+
+</head>
+
+<body>
+
+<a-scene>
+
+    <!-- Camera -->
+
+    <a-entity
+        position="0 1.6 4">
+
+        <a-camera></a-camera>
+
+    </a-entity>
+
+
+
+    <!-- Lights -->
+
+    <a-entity
+        light="type:ambient; intensity:0.7">
+    </a-entity>
+
+    <a-entity
+        light="type:directional; intensity:1"
+        position="2 4 2">
+    </a-entity>
+
+
+
+    <!-- ================================================= -->
+
+    <!--
+        TO ENABLE THE SHADER
+
+        Replace:
+
+        material="color:red"
+
+        WITH
+
+        material="shader:customshader"
+
+    -->
+
+    <!-- ================================================= -->
+
+
+
+    <!-- Box -->
+
+    <a-box
+
+        position="-2 1 -4"
+
+        material="shader:customshader"
+
+        rotation="0 45 0">
+
+    </a-box>
+
+
+
+    <!-- Sphere -->
+
+    <a-sphere
+
+        position="0 1.25 -4"
+
+        radius="1.25"
+
+        material="shader:customshader">
+
+    </a-sphere>
+
+
+
+    <!-- Cylinder -->
+
+    <a-cylinder
+
+        position="2 0.75 -4"
+
+        radius="0.5"
+
+        height="1.5"
+
+        material="shader:customshader">
+
+    </a-cylinder>
+
+
+
+    <!-- Plane -->
+
+    <a-plane
+
+        rotation="-90 0 0"
+
+        width="20"
+
+        height="20"
+
+        color="#666">
+
+    </a-plane>
+
+
+
+    <!-- Sky -->
+
+    <a-sky color="#202030"></a-sky>
+
+</a-scene>
+
+</body>
+</html>
