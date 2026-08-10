@@ -1,65 +1,64 @@
-const THEME_STORAGE_KEY = 'theme';
-let isThemeInitialized = false;
+/**
+ * Dark/Light Theme Toggle Module
+ * ===============================
+ * Handles the theme toggle button, localStorage persistence,
+ * and system preference detection. Inline script in <head> handles
+ * initial load to prevent FOUC; this module handles user toggling.
+ */
 
-function getStoredTheme() {
-  try {
-    return localStorage.getItem(THEME_STORAGE_KEY);
-  } catch {
-    return null;
-  }
+/** @module theme */
+
+const STORAGE_KEY = 'theme';
+
+/**
+ * Get the current effective theme (respects system preference as fallback).
+ * @returns {'dark' | 'light'}
+ */
+function getCurrentTheme() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'dark' || saved === 'light') return saved;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function getSystemTheme() {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+/**
+ * Apply a theme to the document.
+ * @param {'dark' | 'light'} theme
+ */
+function applyTheme(theme) {
+    const root = document.documentElement;
+    const isDark = theme === 'dark';
+    root.classList.toggle('dark', isDark);
+    root.style.colorScheme = isDark ? 'dark' : 'light';
+    localStorage.setItem(STORAGE_KEY, theme);
 }
 
-export function applyTheme(theme) {
-  const root = document.documentElement;
-  const isDark = theme === 'dark';
-  root.classList.toggle('dark', isDark);
-  root.style.colorScheme = isDark ? 'dark' : 'light';
-
-  const toggle = document.getElementById('themeToggle') || document.getElementById('theme-toggle');
-  if (toggle) {
-    const icon = toggle.querySelector('.theme-toggle-icon');
-    const label = toggle.querySelector('.theme-toggle-label');
-    toggle.setAttribute('aria-pressed', String(isDark));
-    toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-    if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
-  }
-
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  } catch {
-    // ignore storage errors
-  }
+/**
+ * Update the toggle button text and icon to reflect current theme.
+ * @param {HTMLElement} button
+ * @param {'dark' | 'light'} theme
+ */
+function updateButtonUI(button, theme) {
+    const icon = button.querySelector('.theme-toggle-icon');
+    const label = button.querySelector('.theme-toggle-label');
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 }
 
-export function toggleTheme() {
-  const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-  applyTheme(nextTheme);
-}
-
+/**
+ * Initialise the theme toggle button interactivity.
+ * Call this on DOMContentLoaded.
+ */
 export function initThemeToggle() {
-  if (isThemeInitialized) {
-    return;
-  }
+    const button = document.getElementById('themeToggle');
+    if (!button) return;
 
-  isThemeInitialized = true;
+    // Update UI to match current state (inline script already applied the class)
+    updateButtonUI(button, getCurrentTheme());
 
-  const storedTheme = getStoredTheme();
-  const theme = storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : getSystemTheme();
-  applyTheme(theme);
-
-  const toggle = document.getElementById('themeToggle') || document.getElementById('theme-toggle');
-  if (toggle) {
-    toggle.addEventListener('click', toggleTheme);
-  }
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initThemeToggle, { once: true });
-} else {
-  initThemeToggle();
+    button.addEventListener('click', () => {
+        const newTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+        updateButtonUI(button, newTheme);
+    });
 }
