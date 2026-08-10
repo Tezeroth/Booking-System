@@ -16,5 +16,8 @@
     "gdpr",
     "tailwind"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3"
+  }
 }
